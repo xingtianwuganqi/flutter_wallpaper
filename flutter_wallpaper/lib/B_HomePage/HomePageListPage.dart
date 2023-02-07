@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallpaper/B_HomePage/EditPage.dart';
 
 class HomePageListPage extends StatefulWidget {
   @override
@@ -17,6 +17,13 @@ class HomePageListPageState extends State<HomePageListPage> {
       appBar: AppBar(
         title: Text("首页"),
       ),
+      body: Center(
+        child: IconButton(icon: const Icon(Icons.abc_outlined), onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context){
+            return const EditPage();
+          }));
+        },),
+      )
     );
   }
 }
