@@ -1,0 +1,8 @@
+
+
+
+
+extension DoubleExt on double {
+
+
+}

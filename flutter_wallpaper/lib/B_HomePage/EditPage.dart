@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_wallpaper/A_Common/extension/string_extension.dart';
 
 class EditPage extends StatefulWidget {
 
@@ -18,74 +19,100 @@ class EditPageState extends State<EditPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey =  GlobalKey();
   double appBarAlpha = 0;
   double appOffset = 100;
+  final FocusNode _userFocusNode = FocusNode();
+  final TextEditingController _controller = TextEditingController();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller.addListener(() {
+      print(_controller.text);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    // return Scaffold(
-    //   key: _scaffoldKey,
-    //   appBar: AppBar(
-    //     title: Text("编辑"),
-    //     actions: [
-    //       IconButton(onPressed: (){
-    //         _scaffoldKey.currentState?.openEndDrawer();
-    //       }, icon: const Icon(Icons.settings))
-    //     ],
-    //   ),
-    //   endDrawer:
-    //       const Drawer(),
-    //   // SizedBox(
-    //   //   width: MediaQuery.of(context).size.width * 0.7,
-    //   //   child: const Drawer(
-    //   //     child: Text("测试"),
-    //   //   ),
-    //   // ),
-    //   body: Center(
-    //     child: IconButton(onPressed: (){
-    //
-    //     }, icon: const Icon(Icons.settings)),
-    //   ) ,
-    // );
 
     var appBar = AppBar(
-      // title: Text("编辑",style: TextStyle(color: appBarAlpha >= 1 ? Colors.black : Colors.white,fontSize: 18),),
-      // backgroundColor: Colors.white.withOpacity(appBarAlpha),
-
+      backgroundColor: Colors.transparent,
       elevation: 0,
-
       leading:
-      // appBarAlpha >= 1 ?
       IconButton(onPressed: (){
         Navigator.pop(context);
       },
           icon: const Icon(Icons.arrow_back_ios_new,color: Colors.black,)),
-      // :IconButton(onPressed: (){
-      //   Navigator.pop(context);
-      // }, icon: const Icon(Icons.arrow_back_ios_new,color: Colors.white,)),
       actions: [
-        IconButton(onPressed: (){}, icon: const Icon(Icons.settings)),
+        IconButton(onPressed: (){
+          _scaffoldKey.currentState?.openEndDrawer();
+        }, icon: const Icon(Icons.settings)),
       ],
     );
-    return Stack(
-      children: [
-        MediaQuery.removePadding(
-        removeTop: true,
-        context: context,
-        // 监听列表的滚动
-        child: Container(color: Colors.blue)
-
-        // NotificationListener(
-        //   )
-
+    return Scaffold(
+      key: _scaffoldKey,
+      endDrawer:  Drawer(
+        child: CustomScrollView(
+          slivers: [
+            textInputWidget(appBar.preferredSize.height),
+          ],
         ),
-        Container(
-          height: appBar.preferredSize.height + 40,
-          color: Colors.white.withOpacity(appBarAlpha),
-          child: appBar,
-        ),
-      ],
+      ),
+      body:
+      Stack(
+        children: [
+          MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              // 监听列表的滚动
+              child: Container(color: Colors.red)
+          ),
+          SizedBox(
+            height: appBar.preferredSize.height + 40,
+            child: appBar,
+          ),
+        ],
+      ),
+
     );
   }
+
+  // 文本输入框
+  Widget textInputWidget(double statusBarHeight) {
+    var textContainer = Container(
+      margin: EdgeInsets.only(top: statusBarHeight,left: 15,right: 15),
+      height: 100 + statusBarHeight,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        border: Border.all(color: "#E8EBF2".hexColor),
+        color: Colors.white
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10,right: 10),
+        child: TextField(
+          controller: _controller,
+          focusNode: _userFocusNode,
+          maxLines: 5,
+          decoration: const InputDecoration(
+              hintText: "请输入文本",
+              border: InputBorder.none
+          ),
+        ),
+      ),
+    );
+
+    var listView = SliverFixedExtentList(
+      itemExtent: statusBarHeight + 120, //列表项高度固定
+      delegate: SliverChildBuilderDelegate(
+            (_, index) {
+          return textContainer;
+        },
+        childCount: 1,
+      ),
+    );
+    return listView;
+  }
+
 }
 
 
@@ -101,44 +128,11 @@ class MyDrawer extends StatelessWidget {
         context: context,
         //移除抽屉菜单顶部默认留白
         removeTop: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 38.0),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ClipOval(
-                      child: Image.asset(
-                        "imgs/avatar.png",
-                        width: 80,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "Wendux",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.add),
-                    title: const Text('Add account'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.settings),
-                    title: const Text('Manage accounts'),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        child: Container(
+          color: Colors.white,
+          child: TextField(
+
+          ),
         ),
       ),
     );
