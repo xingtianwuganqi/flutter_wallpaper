@@ -22,6 +22,8 @@ class EditPageState extends State<EditPage> {
   final FocusNode _userFocusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
+  // 字体样式
+  List<String> textTypeList = ["斜体","粗体","黑体","宋体"];
 
   @override
   void initState() {
@@ -55,6 +57,8 @@ class EditPageState extends State<EditPage> {
         child: CustomScrollView(
           slivers: [
             textInputWidget(appBar.preferredSize.height),
+            textTypeSelectWidget(),
+            textFontSizeWidget(),
           ],
         ),
       ),
@@ -106,6 +110,80 @@ class EditPageState extends State<EditPage> {
       delegate: SliverChildBuilderDelegate(
             (_, index) {
           return textContainer;
+        },
+        childCount: 1,
+      ),
+    );
+    return listView;
+  }
+
+  // 字体选择框
+  Widget textTypeSelectWidget() {
+    var dropDown = Container(
+      margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
+      padding: const EdgeInsets.only(left: 10,right: 10),
+      height: 70,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          border: Border.all(color: "#E8EBF2".hexColor),
+          color: Colors.white
+      ),
+      child: DropdownButtonFormField<String>(
+        decoration: const InputDecoration(
+          border: InputBorder.none
+        ),
+        items: textTypeList.map((e) => DropdownMenuItem(child: Text(e),value: e,)).toList(),
+        onChanged: (newPosition){
+          setState(() {
+
+          });
+        },
+        isExpanded: true,
+        value: textTypeList.first,
+      ),
+    );
+    var listView = SliverFixedExtentList(
+      itemExtent: 70, //列表项高度固定
+      delegate: SliverChildBuilderDelegate(
+            (_, index) {
+          return dropDown;
+        },
+        childCount: 1,
+      ),
+    );
+    return listView;
+  }
+
+  // 文字大小选择
+  Widget textFontSizeWidget() {
+    var dropDown = Container(
+      margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
+      padding: const EdgeInsets.only(left: 10,right: 10),
+      height: 70,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          border: Border.all(color: "#E8EBF2".hexColor),
+          color: Colors.white
+      ),
+      child: DropdownButtonFormField<String>(
+        decoration: const InputDecoration(
+            border: InputBorder.none
+        ),
+        items: textTypeList.map((e) => DropdownMenuItem(child: Text(e),value: e,)).toList(),
+        onChanged: (newPosition){
+          setState(() {
+
+          });
+        },
+        isExpanded: true,
+        value: textTypeList.first,
+      ),
+    );
+    var listView = SliverFixedExtentList(
+      itemExtent: 70, //列表项高度固定
+      delegate: SliverChildBuilderDelegate(
+            (_, index) {
+          return dropDown;
         },
         childCount: 1,
       ),
