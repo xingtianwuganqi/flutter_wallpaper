@@ -224,7 +224,7 @@ class EditPageState extends State<EditPage> {
     var sliderWidget = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       // padding: const EdgeInsets.only(left: 10),
-      height: 85,
+      height: 100,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
@@ -233,7 +233,7 @@ class EditPageState extends State<EditPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.only(left: 10),
+          const Padding(padding: EdgeInsets.only(left: 10, top: 10),
             child: Text("行间距"),
           ),
           Slider(
@@ -255,7 +255,7 @@ class EditPageState extends State<EditPage> {
       ),
     );
     var listView = SliverFixedExtentList(
-      itemExtent: 85, //列表项高度固定
+      itemExtent: 100, //列表项高度固定
       delegate: SliverChildBuilderDelegate(
             (_, index) {
           return sliderWidget;
