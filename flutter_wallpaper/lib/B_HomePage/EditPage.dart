@@ -2,10 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper/A_Common/extension/string_extension.dart';
 
+import 'HomePageListModel.dart';
+
 class EditPage extends StatefulWidget {
 
-  // VoidCallback changed;
-  const EditPage({super.key});
+  final VoidCallback changed;
+  final EditInfoModel? editInfo;
+  const EditPage({super.key,this.editInfo});
 
 
   @override
