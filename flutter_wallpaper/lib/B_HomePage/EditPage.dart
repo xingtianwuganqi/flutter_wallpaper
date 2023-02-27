@@ -59,6 +59,7 @@ class EditPageState extends State<EditPage> {
             textInputWidget(appBar.preferredSize.height),
             textTypeSelectWidget(),
             textFontSizeWidget(),
+            textLineSizeWidget()
           ],
         ),
       ),
@@ -158,25 +159,111 @@ class EditPageState extends State<EditPage> {
   Widget textFontSizeWidget() {
     var dropDown = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
-      padding: const EdgeInsets.only(left: 10,right: 10),
+      padding: const EdgeInsets.only(left: 10),
       height: 70,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
           color: Colors.white
       ),
-      child: DropdownButtonFormField<String>(
-        decoration: const InputDecoration(
-            border: InputBorder.none
-        ),
-        items: textTypeList.map((e) => DropdownMenuItem(child: Text(e),value: e,)).toList(),
-        onChanged: (newPosition){
-          setState(() {
+      child: Row(
+        children: [
+          const Text("字体大小"),
+          Expanded(child: Container(),),
+          Container(
+            padding: EdgeInsets.only(left: 5,right: 5),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.3),
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
+            ),
+            height: 50,
+            width: 50,
+            child: TextField(
 
-          });
+              decoration: InputDecoration(
+                border: InputBorder.none
+              ),
+            ),
+          ),
+          SizedBox(
+            child: Column(
+              children: [
+                GestureDetector(child: Container(
+                  width: 44,
+                  height: 26,
+                  child:  Icon(Icons.arrow_drop_up_rounded),
+                )),
+                GestureDetector(child: Container(
+                  width: 44,
+                  height: 26,
+                  child:  Icon(Icons.arrow_drop_down_rounded),
+                )),
+              ],
+            )
+          )
+        ],
+      ),
+    );
+    var listView = SliverFixedExtentList(
+      itemExtent: 70, //列表项高度固定
+      delegate: SliverChildBuilderDelegate(
+            (_, index) {
+          return dropDown;
         },
-        isExpanded: true,
-        value: textTypeList.first,
+        childCount: 1,
+      ),
+    );
+    return listView;
+  }
+
+
+  // 行间距大小选择
+  Widget textLineSizeWidget() {
+    var dropDown = Container(
+      margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
+      padding: const EdgeInsets.only(left: 10),
+      height: 70,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          border: Border.all(color: "#E8EBF2".hexColor),
+          color: Colors.white
+      ),
+      child: Row(
+        children: [
+          const Text("行间距"),
+          Expanded(child: Container(),),
+          Container(
+            padding: const EdgeInsets.only(left: 5,right: 5),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.3),
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
+            ),
+            height: 50,
+            width: 50,
+            child: const TextField(
+
+              decoration: InputDecoration(
+                  border: InputBorder.none
+              ),
+            ),
+          ),
+          SizedBox(
+              child: Column(
+                children: [
+                  GestureDetector(child: Container(
+                    width: 44,
+                    height: 26,
+                    child:  const Icon(Icons.arrow_drop_up_rounded),
+                  )),
+                  GestureDetector(child: Container(
+                    width: 44,
+                    height: 26,
+                    child:  const Icon(Icons.arrow_drop_down_rounded),
+                  )),
+                ],
+              )
+          )
+        ],
       ),
     );
     var listView = SliverFixedExtentList(
