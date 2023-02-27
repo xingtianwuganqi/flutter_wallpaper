@@ -24,6 +24,8 @@ class EditPageState extends State<EditPage> {
 
   // 字体样式
   List<String> textTypeList = ["斜体","粗体","黑体","宋体"];
+  // 行间距值
+  double _sliderValue = 10;
 
   @override
   void initState() {
@@ -219,58 +221,44 @@ class EditPageState extends State<EditPage> {
 
   // 行间距大小选择
   Widget textLineSizeWidget() {
-    var dropDown = Container(
+    var sliderWidget = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
-      padding: const EdgeInsets.only(left: 10),
-      height: 70,
+      // padding: const EdgeInsets.only(left: 10),
+      height: 85,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
           color: Colors.white
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("行间距"),
-          Expanded(child: Container(),),
-          Container(
-            padding: const EdgeInsets.only(left: 5,right: 5),
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.3),
-              borderRadius: const BorderRadius.all(Radius.circular(4)),
-            ),
-            height: 50,
-            width: 50,
-            child: const TextField(
-
-              decoration: InputDecoration(
-                  border: InputBorder.none
-              ),
-            ),
+          Padding(padding: EdgeInsets.only(left: 10),
+            child: Text("行间距"),
           ),
-          SizedBox(
-              child: Column(
-                children: [
-                  GestureDetector(child: Container(
-                    width: 44,
-                    height: 26,
-                    child:  const Icon(Icons.arrow_drop_up_rounded),
-                  )),
-                  GestureDetector(child: Container(
-                    width: 44,
-                    height: 26,
-                    child:  const Icon(Icons.arrow_drop_down_rounded),
-                  )),
-                ],
-              )
+          Slider(
+            min:  10,
+            max:  30,
+            divisions: 20,
+            label: _sliderValue.toString(),
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey.withOpacity(0.3),
+            value: _sliderValue,
+            onChanged: (value) {
+              _sliderValue = value;
+              setState(() {
+
+              });
+            }
           )
         ],
       ),
     );
     var listView = SliverFixedExtentList(
-      itemExtent: 70, //列表项高度固定
+      itemExtent: 85, //列表项高度固定
       delegate: SliverChildBuilderDelegate(
             (_, index) {
-          return dropDown;
+          return sliderWidget;
         },
         childCount: 1,
       ),
