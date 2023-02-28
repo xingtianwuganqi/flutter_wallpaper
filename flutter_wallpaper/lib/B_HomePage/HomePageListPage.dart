@@ -54,7 +54,11 @@ class HomePageListPageState extends State<HomePageListPage> {
         icon: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context){
-            return const EditPage();
+            return EditPage(changed: (value) {
+              setState(() {
+
+              });
+            });
           }));
         },
       ),
