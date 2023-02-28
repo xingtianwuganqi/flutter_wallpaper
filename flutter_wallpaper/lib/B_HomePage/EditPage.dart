@@ -7,8 +7,8 @@ import 'HomePageListModel.dart';
 class EditPage extends StatefulWidget {
 
   final Function(EditInfoModel) changed;
-  final EditInfoModel? editInfo;
-  const EditPage({super.key,this.editInfo,required this.changed});
+  EditInfoModel? editInfo;
+  EditPage({super.key,this.editInfo,required this.changed});
 
 
   @override
@@ -36,6 +36,9 @@ class EditPageState extends State<EditPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (widget.editInfo == null) {
+      widget.editInfo = EditInfoModel();
+    }
     _controller.addListener(() {
       print(_controller.text);
     });
@@ -66,6 +69,7 @@ class EditPageState extends State<EditPage> {
             textInputWidget(appBar.preferredSize.height),
             textTypeSelectWidget(),
             textFontSizeWidget(),
+            textColorWidget(),
             textLineSizeWidget(),
             backColorWidget()
           ],
@@ -213,6 +217,57 @@ class EditPageState extends State<EditPage> {
     );
     var listView = SliverFixedExtentList(
       itemExtent: 70, //列表项高度固定
+      delegate: SliverChildBuilderDelegate(
+            (_, index) {
+          return dropDown;
+        },
+        childCount: 1,
+      ),
+    );
+    return listView;
+  }
+
+  // 字体颜色
+  Widget textColorWidget() {
+    var colors = backColorList.map((e) {
+      var w = Container(padding: const EdgeInsets.only(
+          left: 15, right: 15, top: 5, bottom: 5), color: e.hexColor,);
+      return DropdownMenuItem(value: e, child: w);
+    });
+
+    var dropDown = Container(
+      margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
+      padding: const EdgeInsets.only(left: 10,right: 10),
+      height: 95,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          border: Border.all(color: "#E8EBF2".hexColor),
+          color: Colors.white
+      ),
+      child:Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(padding: EdgeInsets.only(top: 10),
+              child: Text("字体颜色"),
+            ),
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                  border: InputBorder.none
+              ),
+              items: colors.toList(),
+              onChanged: (newPosition){
+                setState(() {
+                  print(newPosition);
+                });
+              },
+              isExpanded: true,
+              value: backColorList.first,
+            )
+          ]
+      ),
+    );
+    var listView = SliverFixedExtentList(
+      itemExtent: 95, //列表项高度固定
       delegate: SliverChildBuilderDelegate(
             (_, index) {
           return dropDown;
