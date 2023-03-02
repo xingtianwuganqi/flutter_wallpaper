@@ -27,8 +27,30 @@ class EditPageState extends State<EditPage> {
 
   // 字体样式
   List<String> textTypeList = ["斜体","粗体","黑体","宋体"];
+  // 字体颜色
+
+  List<String> textColorList = ["#FFFFFF","#7B68EE", "#0000FF"];
   // 背景色
-  List<String> backColorList = ["#000000", "#FFFFFF","#FF461E"];
+  /*
+  	粉红
+  	适中的板岩暗蓝灰色
+  	纯蓝
+  	石板灰
+  	道奇蓝
+  	深青色
+  	纯绿
+  	金色
+  	橙色
+  	深橙色
+  	巧克力色
+  	马鞍棕色
+  	纯红
+  	白色
+  	灰色
+  	纯黑
+   */
+  List<String> backColorList = ["#FFC0CB", "#7B68EE", "#0000FF","#708090","#1E90FF","#008B8B", "#008000",
+    "#FFD700","#FFA500","#FF8C00","#D2691E","#8B4513","#FF0000","#FFFFFF","#808080","#000000"];
   // 行间距值
   double _sliderValue = 10;
 
@@ -36,9 +58,7 @@ class EditPageState extends State<EditPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.editInfo == null) {
-      widget.editInfo = EditInfoModel();
-    }
+    widget.editInfo ??= EditInfoModel();
     _controller.addListener(() {
       print(_controller.text);
     });
@@ -229,7 +249,7 @@ class EditPageState extends State<EditPage> {
 
   // 字体颜色
   Widget textColorWidget() {
-    var colors = backColorList.map((e) {
+    var colors = textColorList.map((e) {
       var w = Container(padding: const EdgeInsets.only(
           left: 15, right: 15, top: 5, bottom: 5), color: e.hexColor,);
       return DropdownMenuItem(value: e, child: w);
@@ -261,7 +281,7 @@ class EditPageState extends State<EditPage> {
                 });
               },
               isExpanded: true,
-              value: backColorList.first,
+              value: textColorList.first,
             )
           ]
       ),
@@ -297,9 +317,9 @@ class EditPageState extends State<EditPage> {
             child: Text("行间距"),
           ),
           Slider(
-            min:  10,
-            max:  30,
-            divisions: 20,
+            min:  2,
+            max:  12,
+            divisions: 10,
             label: _sliderValue.toString(),
             activeColor: Colors.blue,
             inactiveColor: Colors.grey.withOpacity(0.3),
@@ -378,6 +398,9 @@ class EditPageState extends State<EditPage> {
     return listView;
   }
 
+  void updateEditModel() {
+    
+  }
 }
 
 
