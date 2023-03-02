@@ -29,7 +29,7 @@ class EditPageState extends State<EditPage> {
   List<String> textTypeList = ["斜体","粗体","黑体","宋体"];
   // 字体颜色
 
-  List<String> textColorList = ["#FFFFFF","#7B68EE", "#0000FF"];
+  List<String> textColorList = ["#333333","#006400", "#CD853F"];
   // 背景色
   /*
   	粉红
@@ -102,7 +102,18 @@ class EditPageState extends State<EditPage> {
               removeTop: true,
               context: context,
               // 监听列表的滚动
-              child: Container(color: Colors.red)
+              child: Container(
+                padding: const EdgeInsets.only(left: 30,right: 30),
+                alignment: Alignment.center,
+                color: (widget.editInfo?.backColor ?? "#FFC0CB").hexColor,
+                child: Text(widget.editInfo?.descText ?? "鉴于对人权的无视和侮蔑已发展为野蛮暴行,这些暴行玷污了人类的良心,而一个人人享有言论和信仰自由并免予恐惧和匮乏的世界的来临,已被宣布为普通人民的最高愿望",
+                  style: TextStyle(fontSize: widget.editInfo?.textFontSize ?? 16,
+                  color: (widget.editInfo?.textColor ?? "#333333").hexColor,
+                  fontFamily: widget.editInfo?.textType ?? "MaShan"
+                  ),
+                  strutStyle: StrutStyle(forceStrutHeight: true, height: widget.editInfo?.rowHeight ?? 2),
+                ),
+              )
           ),
           SizedBox(
             height: appBar.preferredSize.height + 40,
@@ -399,7 +410,7 @@ class EditPageState extends State<EditPage> {
   }
 
   void updateEditModel() {
-    
+
   }
 }
 

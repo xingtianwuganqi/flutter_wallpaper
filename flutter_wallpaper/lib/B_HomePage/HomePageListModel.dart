@@ -24,7 +24,8 @@ class HomePageListModel {
 class EditInfoModel {
   final String? descText;
   final String? textType;
-  final int? textFontSize;
+  final double? textFontSize;
+  final double? rowHeight;
   final String? textColor;
   final String? backColor;
   final String? rColor;
@@ -35,6 +36,7 @@ class EditInfoModel {
     this.descText,
     this.textType,
     this.textFontSize,
+    this.rowHeight,
     this.textColor,
     this.backColor,
     this.rColor,
@@ -47,6 +49,7 @@ class EditInfoModel {
       descText: json["descText"],
       textType: json["textType"],
       textFontSize: json["textFontSize"],
+      rowHeight: json["rowHeight"],
       textColor: json["textColor"],
       backColor: json["backColor"],
       rColor: json["rColor"],
@@ -54,4 +57,5 @@ class EditInfoModel {
       bColor: json["bColor"],
     );
   }
+
 }
