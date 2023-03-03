@@ -298,6 +298,9 @@ class EditPageState extends State<EditPage> {
               onChanged: (newPosition){
                 setState(() {
                   print(newPosition);
+                  if (newPosition != null) {
+                    widget.editInfo?.textColor = newPosition;
+                  }
                 });
               },
               isExpanded: true,
@@ -346,6 +349,7 @@ class EditPageState extends State<EditPage> {
             value: _sliderValue,
             onChanged: (value) {
               _sliderValue = value;
+              widget.editInfo?.rowHeight = _sliderValue;
               setState(() {
 
               });
@@ -396,6 +400,9 @@ class EditPageState extends State<EditPage> {
               ),
               items: colors.toList(),
               onChanged: (newPosition){
+                if (newPosition != null) {
+                  widget.editInfo?.backColor = newPosition;
+                }
                 setState(() {
 
                 });
