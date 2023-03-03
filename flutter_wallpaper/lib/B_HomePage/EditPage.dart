@@ -60,7 +60,11 @@ class EditPageState extends State<EditPage> {
     super.initState();
     widget.editInfo ??= EditInfoModel();
     _controller.addListener(() {
+      widget.editInfo?.descText = _controller.text;
       print(_controller.text);
+      setState(() {
+
+      });
     });
   }
 
@@ -84,15 +88,20 @@ class EditPageState extends State<EditPage> {
     return Scaffold(
       key: _scaffoldKey,
       endDrawer:  Drawer(
-        child: CustomScrollView(
-          slivers: [
-            textInputWidget(appBar.preferredSize.height),
-            textTypeSelectWidget(),
-            textFontSizeWidget(),
-            textColorWidget(),
-            textLineSizeWidget(),
-            backColorWidget()
-          ],
+        child: GestureDetector(
+          child: CustomScrollView(
+            slivers: [
+              textInputWidget(appBar.preferredSize.height),
+              textTypeSelectWidget(),
+              textFontSizeWidget(),
+              textColorWidget(),
+              textLineSizeWidget(),
+              backColorWidget()
+            ],
+          ),
+          onTap: () {
+            _userFocusNode.unfocus();
+          },
         ),
       ),
       body:

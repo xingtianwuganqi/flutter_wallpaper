@@ -22,15 +22,15 @@ class HomePageListModel {
 
 
 class EditInfoModel {
-  final String? descText;
-  final String? textType;
-  final double? textFontSize;
-  final double? rowHeight;
-  final String? textColor;
-  final String? backColor;
-  final String? rColor;
-  final String? gColor;
-  final String? bColor;
+  String? descText;
+  String? textType;
+  double? textFontSize;
+  double? rowHeight;
+  String? textColor;
+  String? backColor;
+  String? rColor;
+  String? gColor;
+  String? bColor;
 
   EditInfoModel({
     this.descText,
