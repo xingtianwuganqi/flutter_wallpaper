@@ -20,15 +20,16 @@ class EditPage extends StatefulWidget {
 
 class EditPageState extends State<EditPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey =  GlobalKey();
-  double appBarAlpha = 0;
   double appOffset = 100;
   final FocusNode _userFocusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
-  // 字体样式
-  List<String> textTypeList = ["斜体","粗体","黑体","宋体"];
-  // 字体颜色
+  double _fontSize = 16;
 
+  // 字体样式
+  List<String> textTypeList = ["MaShan","NotaSans","NotaSerif"];
+
+  // 字体颜色
   List<String> textColorList = ["#333333","#006400", "#CD853F"];
   // 背景色
   /*
@@ -52,20 +53,20 @@ class EditPageState extends State<EditPage> {
   List<String> backColorList = ["#FFC0CB", "#7B68EE", "#0000FF","#708090","#1E90FF","#008B8B", "#008000",
     "#FFD700","#FFA500","#FF8C00","#D2691E","#8B4513","#FF0000","#FFFFFF","#808080","#000000"];
   // 行间距值
-  double _sliderValue = 10;
+  double _sliderValue = 2;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     widget.editInfo ??= EditInfoModel();
-    _controller.addListener(() {
-      widget.editInfo?.descText = _controller.text;
-      print(_controller.text);
-      setState(() {
-
-      });
-    });
+    // _controller.addListener(() {
+    //   widget.editInfo?.descText = _controller.text;
+    //   print(_controller.text);
+    //   setState(() {
+    //
+    //   });
+    // });
   }
 
   @override
@@ -154,6 +155,12 @@ class EditPageState extends State<EditPage> {
               hintText: "请输入文本",
               border: InputBorder.none
           ),
+          onChanged: (text) {
+            widget.editInfo?.descText = text;
+            setState(() {
+
+            });
+          },
         ),
       ),
     );
@@ -185,10 +192,10 @@ class EditPageState extends State<EditPage> {
         decoration: const InputDecoration(
           border: InputBorder.none
         ),
-        items: textTypeList.map((e) => DropdownMenuItem(child: Text(e),value: e,)).toList(),
+        items: textTypeList.map((e) => DropdownMenuItem(value: e,child: Text(e,style: TextStyle(fontFamily: e),),)).toList(),
         onChanged: (newPosition){
           setState(() {
-
+            widget.editInfo?.textType = newPosition;
           });
         },
         isExpanded: true,
@@ -223,7 +230,7 @@ class EditPageState extends State<EditPage> {
           const Text("字体大小"),
           Expanded(child: Container(),),
           Container(
-            padding: EdgeInsets.only(left: 5,right: 5),
+            padding: const EdgeInsets.only(left: 5,right: 5),
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.3),
               borderRadius: const BorderRadius.all(Radius.circular(4)),
@@ -231,9 +238,12 @@ class EditPageState extends State<EditPage> {
             height: 50,
             width: 50,
             child: TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none
               ),
+              controller: TextEditingController.fromValue(TextEditingValue(text: "$_fontSize")),
+              textAlign: TextAlign.center,
+              enabled: false,
             ),
           ),
           SizedBox(
@@ -242,13 +252,27 @@ class EditPageState extends State<EditPage> {
                 GestureDetector(child: Container(
                   width: 44,
                   height: 26,
-                  child:  Icon(Icons.arrow_drop_up_rounded),
-                )),
+                  child:  const Icon(Icons.arrow_drop_up_rounded),
+                ),onTap: () {
+                  _fontSize += 1;
+                  setState(() {
+                    widget.editInfo?.textFontSize = _fontSize;
+                  });
+                },
+                ),
                 GestureDetector(child: Container(
                   width: 44,
                   height: 26,
-                  child:  Icon(Icons.arrow_drop_down_rounded),
-                )),
+                  child:  const Icon(Icons.arrow_drop_down_rounded),
+                ),onTap: () {
+                  if (_fontSize > 0) {
+                    _fontSize -= 1;
+                    setState(() {
+                      widget.editInfo?.textFontSize = _fontSize;
+                    });
+                  }
+                },
+                ),
               ],
             )
           )
