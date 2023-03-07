@@ -3,18 +3,21 @@ class HomePageListModel {
   final String? imgUrl;
   final int? createTime;
   final bool? isAdd;
+  final EditInfoModel? editModel;
 
   HomePageListModel({
     this.imgUrl,
     this.createTime,
     this.isAdd,
+    this.editModel
   });
 
   factory HomePageListModel.fromJson(Map<String, dynamic> json) {
     return HomePageListModel(
       imgUrl: json["imgUrl"],
       createTime: json["createTime"],
-      isAdd: false
+      isAdd: false,
+      editModel: EditInfoModel.fromJson(json["editInfo"])
     );
   }
 }

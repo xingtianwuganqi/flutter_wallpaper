@@ -13,7 +13,10 @@ class HomePageListPage extends StatefulWidget {
 
 class HomePageListPageState extends State<HomePageListPage> {
   
-  List<HomePageListModel> homeListModels = [HomePageListModel(isAdd: true)];
+  List<HomePageListModel> homeListModels = [
+    HomePageListModel(),
+    HomePageListModel(isAdd: true)
+  ];
   
   @override
   void initState() {

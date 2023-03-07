@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper/A_Common/extension/string_extension.dart';
 
@@ -24,7 +25,7 @@ class EditPageState extends State<EditPage> {
   final FocusNode _userFocusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
-  double _fontSize = 16;
+  double _fontSize = 20;
 
   // 字体样式
   List<String> textTypeList = ["MaShan","NotaSans","NotaSerif"];
@@ -59,14 +60,26 @@ class EditPageState extends State<EditPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.editInfo ??= EditInfoModel();
-    // _controller.addListener(() {
-    //   widget.editInfo?.descText = _controller.text;
-    //   print(_controller.text);
-    //   setState(() {
-    //
-    //   });
-    // });
+    widget.editInfo ??= EditInfoModel(
+      descText: "鉴于对人类家庭所有成员的固有尊严及其平等的和不移的权利的承认,乃是世界自由、正义与和平的基础",
+      textType: "MaShan",
+      textFontSize: _fontSize,
+      rowHeight: _sliderValue,
+      textColor: textColorList.first,
+      backColor: backColorList.first,
+    );
+    // 设置默认值
+    _controller.text = widget.editInfo?.descText ?? "";
+    _fontSize = widget.editInfo?.textFontSize ?? 20;
+    _sliderValue = widget.editInfo?.rowHeight ?? 2;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
+    _userFocusNode.dispose();
   }
 
   @override
@@ -115,11 +128,11 @@ class EditPageState extends State<EditPage> {
               child: Container(
                 padding: const EdgeInsets.only(left: 30,right: 30),
                 alignment: Alignment.center,
-                color: (widget.editInfo?.backColor ?? "#FFC0CB").hexColor,
-                child: Text(widget.editInfo?.descText ?? "鉴于对人权的无视和侮蔑已发展为野蛮暴行,这些暴行玷污了人类的良心,而一个人人享有言论和信仰自由并免予恐惧和匮乏的世界的来临,已被宣布为普通人民的最高愿望",
-                  style: TextStyle(fontSize: widget.editInfo?.textFontSize ?? 16,
-                  color: (widget.editInfo?.textColor ?? "#333333").hexColor,
-                  fontFamily: widget.editInfo?.textType ?? "MaShan"
+                color: (widget.editInfo?.backColor)?.hexColor,
+                child: Text(widget.editInfo?.descText ?? "",
+                  style: TextStyle(fontSize: widget.editInfo?.textFontSize,
+                  color: (widget.editInfo?.textColor)?.hexColor,
+                  fontFamily: widget.editInfo?.textType
                   ),
                   strutStyle: StrutStyle(forceStrutHeight: true, height: widget.editInfo?.rowHeight ?? 2),
                 ),
@@ -131,7 +144,6 @@ class EditPageState extends State<EditPage> {
           ),
         ],
       ),
-
     );
   }
 
@@ -321,7 +333,9 @@ class EditPageState extends State<EditPage> {
               items: colors.toList(),
               onChanged: (newPosition){
                 setState(() {
-                  print(newPosition);
+                  if (kDebugMode) {
+                    print(newPosition);
+                  }
                   if (newPosition != null) {
                     widget.editInfo?.textColor = newPosition;
                   }
@@ -432,7 +446,7 @@ class EditPageState extends State<EditPage> {
                 });
               },
               isExpanded: true,
-              value: backColorList.first,
+              value: widget.editInfo?.backColor ?? backColorList.first,
             )
           ]
         ),
