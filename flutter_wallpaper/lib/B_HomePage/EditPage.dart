@@ -1,6 +1,9 @@
 
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_wallpaper/A_Common/extension/string_extension.dart';
 
 import 'HomePageListModel.dart';
@@ -56,6 +59,12 @@ class EditPageState extends State<EditPage> {
   // 行间距值
   double _sliderValue = 2;
 
+  // 截屏的key
+  //全局key
+  GlobalKey _boundaryKey = GlobalKey();
+  List<Uint8List> _images = [];
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -80,6 +89,24 @@ class EditPageState extends State<EditPage> {
     super.dispose();
     _controller.dispose();
     _userFocusNode.dispose();
+  }
+
+  // ///截图
+  Future<Uint8List?> _capturePng(
+      GlobalKey globalKey, {
+        double pixelRatio = 1.0, //截屏的图片与原图的比例
+      }) async {
+    try {
+      RenderRepaintBoundary? boundary =
+      globalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      var image = await boundary?.toImage(pixelRatio: pixelRatio);
+      ByteData? byteData = await image?.toByteData(format: ImageByteFormat.png);
+      Uint8List? pngBytes = byteData?.buffer.asUint8List();
+      return pngBytes;
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 
   @override
@@ -125,16 +152,20 @@ class EditPageState extends State<EditPage> {
               removeTop: true,
               context: context,
               // 监听列表的滚动
-              child: Container(
-                padding: const EdgeInsets.only(left: 30,right: 30),
-                alignment: Alignment.center,
-                color: (widget.editInfo?.backColor)?.hexColor,
-                child: Text(widget.editInfo?.descText ?? "",
-                  style: TextStyle(fontSize: widget.editInfo?.textFontSize,
-                  color: (widget.editInfo?.textColor)?.hexColor,
-                  fontFamily: widget.editInfo?.textType
+              child:
+              RepaintBoundary(
+                key: _boundaryKey,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 30,right: 30),
+                  alignment: Alignment.center,
+                  color: (widget.editInfo?.backColor)?.hexColor,
+                  child: Text(widget.editInfo?.descText ?? "",
+                    style: TextStyle(fontSize: widget.editInfo?.textFontSize,
+                        color: (widget.editInfo?.textColor)?.hexColor,
+                        fontFamily: widget.editInfo?.textType
+                    ),
+                    strutStyle: StrutStyle(forceStrutHeight: true, height: widget.editInfo?.rowHeight ?? 2),
                   ),
-                  strutStyle: StrutStyle(forceStrutHeight: true, height: widget.editInfo?.rowHeight ?? 2),
                 ),
               )
           ),
@@ -450,6 +481,40 @@ class EditPageState extends State<EditPage> {
             )
           ]
         ),
+    );
+    var listView = SliverFixedExtentList(
+      itemExtent: 95, //列表项高度固定
+      delegate: SliverChildBuilderDelegate(
+            (_, index) {
+          return dropDown;
+        },
+        childCount: 1,
+      ),
+    );
+    return listView;
+  }
+
+  Widget saveButtonWidget() {
+
+    var dropDown = Container(
+      margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
+      padding: const EdgeInsets.only(left: 10,right: 10),
+      height: 50,
+      child:
+      TextButton(
+        child: Text('保存到相册'),
+        onPressed: () {
+          //获取截屏图像
+          Future<Uint8List?> pngBytes = _capturePng(_boundaryKey);
+          //添加到图片数组中
+          pngBytes.then((value){
+            if (value != null) {
+              _images.add(value!);
+            }
+          });
+          setState(() {});
+        },
+      )
     );
     var listView = SliverFixedExtentList(
       itemExtent: 95, //列表项高度固定
