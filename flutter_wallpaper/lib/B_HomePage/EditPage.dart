@@ -137,7 +137,8 @@ class EditPageState extends State<EditPage> {
               textFontSizeWidget(),
               textColorWidget(),
               textLineSizeWidget(),
-              backColorWidget()
+              backColorWidget(),
+              saveButtonWidget()
             ],
           ),
           onTap: () {
