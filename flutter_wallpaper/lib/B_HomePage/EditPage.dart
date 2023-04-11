@@ -1,11 +1,15 @@
 
+import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_wallpaper/A_Common/extension/string_extension.dart';
-
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:platform_info/platform_info.dart';
 import 'HomePageListModel.dart';
 
 class EditPage extends StatefulWidget {
@@ -107,6 +111,73 @@ class EditPageState extends State<EditPage> {
       print(e);
     }
     return null;
+  }
+
+  /// 保存图片
+  void savePhoto() async {
+    RenderRepaintBoundary? boundary = _boundaryKey.currentContext!
+        .findRenderObject() as RenderRepaintBoundary?;
+
+    double dpr = ui.window.devicePixelRatio; // 获取当前设备的像素比
+    var image = await boundary!.toImage(pixelRatio: dpr);
+    // 将image转化成byte
+    ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+    //获取保存相册权限，如果没有，则申请改权限
+    bool permition = await getPormiation();
+    var status = await Permission.photos.status;
+    if (permition) {
+      if (Platform.instance.isIOS) {
+        if (status.isGranted) {
+          Uint8List images = byteData!.buffer.asUint8List();
+          final result = await ImageGallerySaver.saveImage(images,
+              quality: 60, name: "hello");
+          EasyLoading.showToast("保存成功");
+        }
+        if (status.isDenied) {
+          print("IOS拒绝");
+          EasyLoading.showToast("拒绝");
+        }
+      } else {
+        //安卓
+        if (status.isGranted) {
+          print("Android已授权");
+          Uint8List images = byteData!.buffer.asUint8List();
+          final result = await ImageGallerySaver.saveImage(images, quality: 60);
+          if (result != null) {
+            EasyLoading.showToast("保存成功");
+          } else {
+            print('error');
+            // toast("保存失败");
+            EasyLoading.showToast("保存失败");
+          }
+        }
+      }
+    }else{
+      //重新请求--第一次请求权限时，保存方法不会走，需要重新调一次
+      savePhoto();
+    }
+  }
+
+  //申请存本地相册权限
+  Future<bool> getPormiation() async {
+    if (Platform.instance.isIOS) {
+      var status = await Permission.photos.status;
+      if (status.isDenied) {
+        Map<Permission, PermissionStatus> statuses = await [
+          Permission.photos,
+        ].request();
+        // saveImage(globalKey);
+      }
+      return status.isGranted;
+    } else {
+      var status = await Permission.storage.status;
+      if (status.isDenied) {
+        Map<Permission, PermissionStatus> statuses = await [
+          Permission.storage,
+        ].request();
+      }
+      return status.isGranted;
+    }
   }
 
   @override
@@ -505,15 +576,7 @@ class EditPageState extends State<EditPage> {
       TextButton(
         child: Text('保存到相册'),
         onPressed: () {
-          //获取截屏图像
-          Future<Uint8List?> pngBytes = _capturePng(_boundaryKey);
-          //添加到图片数组中
-          pngBytes.then((value){
-            if (value != null) {
-              _images.add(value!);
-            }
-          });
-          setState(() {});
+          savePhoto();
         },
       )
     );
