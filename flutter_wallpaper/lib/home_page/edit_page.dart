@@ -1,16 +1,15 @@
 
 import 'dart:ui' as ui;
 import 'dart:ui';
-
+import 'package:flutter_basic/extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_wallpaper/A_Common/extension/string_extension.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:platform_info/platform_info.dart';
-import 'HomePageListModel.dart';
+import 'home_page_model.dart';
 
 class EditPage extends StatefulWidget {
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wallpaper/B_HomePage/EditPage.dart';
+import 'package:flutter_wallpaper/home_page/edit_page.dart';
 
-import 'HomePageListModel.dart';
+import 'home_page_model.dart';
 
 class HomePageListPage extends StatefulWidget {
   @override

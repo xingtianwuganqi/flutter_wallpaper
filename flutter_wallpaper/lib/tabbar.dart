@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_wallpaper/C_ShowList/ShowPageListPage.dart';
-import 'package:flutter_wallpaper/D_Mine/MyPage.dart';
-import 'B_HomePage/HomePageListPage.dart';
+import 'package:flutter_wallpaper/show_list/show_page.dart';
+import 'package:flutter_wallpaper/mine/my_page.dart';
+import 'package:flutter_wallpaper/home_page/home_page_list.dart';
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
   @override
