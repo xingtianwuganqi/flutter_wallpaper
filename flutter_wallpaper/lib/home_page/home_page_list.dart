@@ -4,6 +4,8 @@ import 'package:flutter_wallpaper/home_page/edit_page.dart';
 import 'home_page_model.dart';
 
 class HomePageListPage extends StatefulWidget {
+  const HomePageListPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState

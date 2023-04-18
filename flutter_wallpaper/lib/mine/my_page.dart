@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyPage extends StatefulWidget {
+  const MyPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -15,7 +17,7 @@ class MyPageState extends State<MyPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("我的",style: TextStyle(color: Colors.black),),
+        title: const Text("我的",style: TextStyle(color: Colors.black),),
       ),
     );
   }

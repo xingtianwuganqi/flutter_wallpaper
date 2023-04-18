@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_basic/base_tabbar.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_wallpaper/show_list/show_page.dart';
 import 'package:flutter_wallpaper/mine/my_page.dart';
 import 'package:flutter_wallpaper/home_page/home_page_list.dart';
-class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return HomeTabStatus();
-  }
+class HomeTab extends BaseTabBar {
+  HomeTab({required super.pages, required super.items});
 }
 
 class HomeTabStatus extends State<HomeTab> {

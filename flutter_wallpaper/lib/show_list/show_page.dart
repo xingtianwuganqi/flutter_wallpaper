@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShowPageListPage extends StatefulWidget {
+  const ShowPageListPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -15,7 +16,7 @@ class ShowPageListPageState extends State<ShowPageListPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("秀"),
+        title: const Text("秀"),
       ),
     );
   }
