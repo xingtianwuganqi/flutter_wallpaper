@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_basic/base_model.dart';
 import 'package:flutter_basic/base_tabbar.dart';
+import 'package:flutter_basic/base_tools.dart';
 import 'package:flutter_wallpaper/home_page/home_page_list.dart';
 import 'package:flutter_wallpaper/mine/my_page.dart';
 import 'package:flutter_wallpaper/show_list/show_page.dart';
@@ -16,10 +17,10 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    setAppIdentifier(AppIdEnum.plan);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -34,11 +35,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: createTabbar(),
+      home: createTabBar(),
     );
   }
 
-  Widget createTabbar() {
+  Widget createTabBar() {
     List<Widget> pages = [const HomePageListPage(),const ShowPageListPage(),const MyPage()];
     List<BottomNavigationModel> items = [
       BottomNavigationModel(selectIcon: "assets/icons/icon_tab_home_se@3x.png", unSelectIcon: "assets/icons/icon_tab_home_un@3x.png", title: "首页", isSelect: false, unreadNum: 0),
