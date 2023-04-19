@@ -10,6 +10,9 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:platform_info/platform_info.dart';
 import 'home_page_model.dart';
+import 'package:flutter_printer/flutter_printer.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+
 
 class EditPage extends StatefulWidget {
 
@@ -123,8 +126,8 @@ class EditPageState extends State<EditPage> {
     ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
     //获取保存相册权限，如果没有，则申请改权限
     bool permition = await getPormiation();
-    var status = await Permission.photos.status;
     if (permition) {
+      var status = await Permission.photos.status;
       if (Platform.instance.isIOS) {
         if (status.isGranted) {
           Uint8List images = byteData!.buffer.asUint8List();
@@ -134,22 +137,46 @@ class EditPageState extends State<EditPage> {
         }
         if (status.isDenied) {
           print("IOS拒绝");
-          EasyLoading.showToast("拒绝");
+          EasyLoading.showToast("您拒绝授权");
         }
       } else {
         //安卓
-        if (status.isGranted) {
-          print("Android已授权");
-          Uint8List images = byteData!.buffer.asUint8List();
-          final result = await ImageGallerySaver.saveImage(images, quality: 60);
-          if (result != null) {
-            EasyLoading.showToast("保存成功");
-          } else {
-            print('error');
-            // toast("保存失败");
-            EasyLoading.showToast("保存失败");
+        if (Platform.instance.isAndroid) {
+          final androidInfo = await DeviceInfoPlugin().androidInfo;
+          if (androidInfo.version.sdkInt <= 32) {
+            /// use [Permissions.storage.status]
+            var status = await Permission.storage.status;
+            if (status.isGranted) {
+              Printer.printMapJsonLog('Android已授权');
+              Uint8List images = byteData!.buffer.asUint8List();
+              final result = await ImageGallerySaver.saveImage(images, quality: 60);
+              if (result != null) {
+                EasyLoading.showToast("保存成功");
+              } else {
+                EasyLoading.showToast("保存失败");
+              }
+            }else{
+              EasyLoading.showToast("您未授权，请授权后重试");
+            }
+          }  else {
+            /// use [Permissions.photos.status]
+            var status = await Permission.photos.status;
+            if (status.isGranted) {
+              Printer.printMapJsonLog('Android已授权');
+              Uint8List images = byteData!.buffer.asUint8List();
+              final result = await ImageGallerySaver.saveImage(images, quality: 60);
+              if (result != null) {
+                EasyLoading.showToast("保存成功");
+              } else {
+                EasyLoading.showToast("保存失败");
+              }
+            }else{
+              Printer.printMapJsonLog('Android未授权');
+              EasyLoading.showToast("您未授权，请授权后重试");
+            }
           }
         }
+
       }
     }else{
       //重新请求--第一次请求权限时，保存方法不会走，需要重新调一次
@@ -253,7 +280,7 @@ class EditPageState extends State<EditPage> {
   Widget textInputWidget(double statusBarHeight) {
     var textContainer = Container(
       margin: EdgeInsets.only(top: statusBarHeight,left: 15,right: 15),
-      height: 100 + statusBarHeight,
+      height: 80 + statusBarHeight,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         border: Border.all(color: "#E8EBF2".hexColor),
@@ -279,14 +306,17 @@ class EditPageState extends State<EditPage> {
       ),
     );
 
-    var listView = SliverFixedExtentList(
-      itemExtent: statusBarHeight + 120, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return textContainer;
-        },
-        childCount: 1,
-      ),
+    // var listView = SliverFixedExtentList(
+    //   itemExtent: statusBarHeight + 120, //列表项高度固定
+    //   delegate: SliverChildBuilderDelegate(
+    //         (_, index) {
+    //       return textContainer;
+    //     },
+    //     childCount: 1,
+    //   ),
+    // );
+    var listView = SliverToBoxAdapter(
+      child: textContainer,
     );
     return listView;
   }
@@ -296,7 +326,7 @@ class EditPageState extends State<EditPage> {
     var dropDown = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       padding: const EdgeInsets.only(left: 10,right: 10),
-      height: 70,
+      // height: 70,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
@@ -316,14 +346,8 @@ class EditPageState extends State<EditPage> {
         value: textTypeList.first,
       ),
     );
-    var listView = SliverFixedExtentList(
-      itemExtent: 70, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return dropDown;
-        },
-        childCount: 1,
-      ),
+    var listView = SliverToBoxAdapter(
+      child: dropDown,
     );
     return listView;
   }
@@ -333,7 +357,7 @@ class EditPageState extends State<EditPage> {
     var dropDown = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       padding: const EdgeInsets.only(left: 10),
-      height: 70,
+      // height: 70,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
@@ -393,14 +417,8 @@ class EditPageState extends State<EditPage> {
         ],
       ),
     );
-    var listView = SliverFixedExtentList(
-      itemExtent: 70, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return dropDown;
-        },
-        childCount: 1,
-      ),
+    var listView = SliverToBoxAdapter(
+      child: dropDown,
     );
     return listView;
   }
@@ -416,7 +434,6 @@ class EditPageState extends State<EditPage> {
     var dropDown = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       padding: const EdgeInsets.only(left: 10,right: 10),
-      height: 95,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
@@ -449,14 +466,8 @@ class EditPageState extends State<EditPage> {
           ]
       ),
     );
-    var listView = SliverFixedExtentList(
-      itemExtent: 95, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return dropDown;
-        },
-        childCount: 1,
-      ),
+    var listView = SliverToBoxAdapter(
+      child: dropDown,
     );
     return listView;
   }
@@ -467,7 +478,6 @@ class EditPageState extends State<EditPage> {
     var sliderWidget = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       // padding: const EdgeInsets.only(left: 10),
-      height: 100,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
@@ -498,14 +508,8 @@ class EditPageState extends State<EditPage> {
         ],
       ),
     );
-    var listView = SliverFixedExtentList(
-      itemExtent: 100, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return sliderWidget;
-        },
-        childCount: 1,
-      ),
+    var listView = SliverToBoxAdapter(
+      child: sliderWidget,
     );
     return listView;
   }
@@ -522,7 +526,6 @@ class EditPageState extends State<EditPage> {
     var dropDown = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       padding: const EdgeInsets.only(left: 10,right: 10),
-      height: 95,
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           border: Border.all(color: "#E8EBF2".hexColor),
@@ -553,14 +556,8 @@ class EditPageState extends State<EditPage> {
           ]
         ),
     );
-    var listView = SliverFixedExtentList(
-      itemExtent: 95, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return dropDown;
-        },
-        childCount: 1,
-      ),
+    var listView = SliverToBoxAdapter(
+      child: dropDown,
     );
     return listView;
   }
@@ -573,20 +570,14 @@ class EditPageState extends State<EditPage> {
       height: 50,
       child:
       TextButton(
-        child: Text('保存到相册'),
+        child: const Text('保存到相册'),
         onPressed: () {
           savePhoto();
         },
       )
     );
-    var listView = SliverFixedExtentList(
-      itemExtent: 95, //列表项高度固定
-      delegate: SliverChildBuilderDelegate(
-            (_, index) {
-          return dropDown;
-        },
-        childCount: 1,
-      ),
+    var listView = SliverToBoxAdapter(
+      child: dropDown,
     );
     return listView;
   }

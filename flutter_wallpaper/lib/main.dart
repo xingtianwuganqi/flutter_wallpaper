@@ -5,7 +5,7 @@ import 'package:flutter_basic/base_tools.dart';
 import 'package:flutter_wallpaper/home_page/home_page_list.dart';
 import 'package:flutter_wallpaper/mine/my_page.dart';
 import 'package:flutter_wallpaper/show_list/show_page.dart';
-import 'package:flutter_wallpaper/tabbar.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 
 //这里就是关键的代码，定义一个key
@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: createTabBar(),
+      builder: EasyLoading.init(),
     );
   }
 
