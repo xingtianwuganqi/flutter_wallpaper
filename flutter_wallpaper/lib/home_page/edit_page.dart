@@ -1,6 +1,7 @@
 
 import 'dart:ui' as ui;
 import 'dart:ui';
+import 'package:flutter_basic/base_tools.dart';
 import 'package:flutter_basic/extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:platform_info/platform_info.dart';
-import 'home_page_model.dart';
+import '../models/home_page_model.dart';
 import 'package:flutter_printer/flutter_printer.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class EditPage extends StatefulWidget {
 
@@ -33,6 +35,8 @@ class EditPageState extends State<EditPage> {
   double appOffset = 100;
   final FocusNode _userFocusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
+  // 保存的key
+  final String EDITKEY = "userEditList";
 
   double _fontSize = 20;
 
@@ -67,7 +71,7 @@ class EditPageState extends State<EditPage> {
 
   // 截屏的key
   //全局key
-  GlobalKey _boundaryKey = GlobalKey();
+  final GlobalKey _boundaryKey = GlobalKey();
   List<Uint8List> _images = [];
 
 
@@ -76,6 +80,7 @@ class EditPageState extends State<EditPage> {
     // TODO: implement initState
     super.initState();
     widget.editInfo ??= EditInfoModel(
+      editId: DateTime.now().millisecond.toString(),
       descText: "鉴于对人类家庭所有成员的固有尊严及其平等的和不移的权利的承认,乃是世界自由、正义与和平的基础",
       textType: "MaShan",
       textFontSize: _fontSize,
@@ -132,11 +137,13 @@ class EditPageState extends State<EditPage> {
         if (status.isGranted) {
           Uint8List images = byteData!.buffer.asUint8List();
           final result = await ImageGallerySaver.saveImage(images,
-              quality: 60, name: "hello");
+              quality: 100);
           EasyLoading.showToast("保存成功");
         }
         if (status.isDenied) {
-          print("IOS拒绝");
+          if (kDebugMode) {
+            print("IOS拒绝");
+          }
           EasyLoading.showToast("您拒绝授权");
         }
       } else {
@@ -149,7 +156,7 @@ class EditPageState extends State<EditPage> {
             if (status.isGranted) {
               Printer.printMapJsonLog('Android已授权');
               Uint8List images = byteData!.buffer.asUint8List();
-              final result = await ImageGallerySaver.saveImage(images, quality: 60);
+              final result = await ImageGallerySaver.saveImage(images, quality: 100);
               if (result != null) {
                 EasyLoading.showToast("保存成功");
               } else {
@@ -164,7 +171,7 @@ class EditPageState extends State<EditPage> {
             if (status.isGranted) {
               Printer.printMapJsonLog('Android已授权');
               Uint8List images = byteData!.buffer.asUint8List();
-              final result = await ImageGallerySaver.saveImage(images, quality: 60);
+              final result = await ImageGallerySaver.saveImage(images, quality: 100);
               if (result != null) {
                 EasyLoading.showToast("保存成功");
               } else {
@@ -567,11 +574,16 @@ class EditPageState extends State<EditPage> {
     var dropDown = Container(
       margin: const EdgeInsets.only(top: 15,left: 15,right: 15),
       padding: const EdgeInsets.only(left: 10,right: 10),
+      decoration: BoxDecoration(
+        color: ColorsUtil.fromEnum(ColorEnum.system),
+        borderRadius: BorderRadius.circular(6)
+      ),
       height: 50,
       child:
       TextButton(
-        child: const Text('保存到相册'),
+        child: const Text('保存到相册',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 16),),
         onPressed: () {
+          updateEditModel();
           savePhoto();
         },
       )
@@ -583,7 +595,29 @@ class EditPageState extends State<EditPage> {
   }
 
   void updateEditModel() {
+    if (widget.editInfo != null) {
+      EditInfoModel infoModel = widget.editInfo!;
+      var jsonMap = infoModel.toJson();
+      var jsonStr = jsonEncode(jsonMap);
+      print(jsonStr);
+      saveEditInfo(jsonStr);
+    }else{
+      EasyLoading.showToast("");
+    }
+  }
 
+  Future<void> saveEditInfo(String infoString) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String>? list = preferences.getStringList(EDITKEY);
+    if (list == null) {
+      List<String> newList = [infoString];
+      preferences.setStringList(EDITKEY, newList);
+      print("save");
+    }else{
+      list.insert(0, infoString);
+      preferences.setStringList(EDITKEY, list);
+      print("no save");
+    }
   }
 }
 

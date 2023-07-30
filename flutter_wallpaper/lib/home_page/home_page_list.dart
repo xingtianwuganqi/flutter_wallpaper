@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_basic/base_tools.dart';
 import 'package:flutter_wallpaper/home_page/edit_page.dart';
 
-import 'home_page_model.dart';
+import '../mine/my_page.dart';
+import '../models/home_page_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageListPage extends StatefulWidget {
   const HomePageListPage({super.key});
@@ -15,16 +20,17 @@ class HomePageListPage extends StatefulWidget {
 
 class HomePageListPageState extends State<HomePageListPage> {
   
-  List<HomePageListModel> homeListModels = [
-    HomePageListModel(),
-    HomePageListModel(isAdd: true)
+  List<EditInfoModel> listModels = [
+    EditInfoModel(isAdd: 1),
   ];
-  
+
+  final String EDITKEY = "userEditList";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    
+    readDataSources();
   }
   
   @override
@@ -33,22 +39,45 @@ class HomePageListPageState extends State<HomePageListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("首页"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return const MyPage();
+            }));
+          }, icon: const Icon(Icons.settings))
+        ],
       ),
       body: GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
         childAspectRatio: 1.0
-      ),itemCount: homeListModels.length,
+      ),itemCount: listModels.length,
           itemBuilder: (context, index) {
-          var item = homeListModels[index];
-          if (item.isAdd == true) {
+          var item = listModels[index];
+          if (item.isAdd == 1) {
             return addItem();
           }else{
-            return Container();
+            return contentItem(item);
           }
         }
       )
+    );
+  }
+
+  Widget contentItem(EditInfoModel edit) {
+    return Container(
+      color: ColorsUtil.hexColor(edit.backColor ?? ""),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Text(edit.descText ?? "",style: TextStyle(fontSize: 12,
+            color: ColorsUtil.hexColor(edit.textColor ?? ""),
+          // fontFamily: edit.,
+          overflow: TextOverflow.clip,
+        ),maxLines: null,
+        ),
+      ),
+
     );
   }
 
@@ -68,5 +97,25 @@ class HomePageListPageState extends State<HomePageListPage> {
         },
       ),
     );
+  }
+
+  // 读取本地数据
+  Future<void> readDataSources() async {
+    SharedPreferences preferences  = await SharedPreferences.getInstance();
+    List<String>? list = preferences.getStringList(EDITKEY);
+    if (list != null) {
+      print("本地有数据");
+      List<EditInfoModel> editList = [];
+      for (var element in list) {
+        var jsonMap = jsonDecode(element);
+        print(jsonMap);
+        var editModel = EditInfoModel.fromJson(jsonMap);
+        editList.add(editModel);
+      }
+      listModels.addAll(editList);
+      setState(() {
+
+      });
+    }
   }
 }

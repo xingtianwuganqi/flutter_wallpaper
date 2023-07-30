@@ -24,18 +24,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+            color: Colors.indigo,
+            foregroundColor: Colors.white,
+            elevation: 0.2
+        ),
+        bottomAppBarTheme: const BottomAppBarTheme(
+          color: Colors.white,
+        ),
+        primaryColor: Colors.white,
+        primarySwatch: Colors.indigo, // 刷新控件的颜色
+        // 使用 Scaffold 构件的页面，统一设置背景颜色
+        scaffoldBackgroundColor: Colors.white,
+        splashColor: Colors.transparent, // 点击时的高亮效果设置为透明
+        highlightColor: Colors.transparent,
       ),
-      home: createTabBar(),
+      home: const HomePageListPage(),
       builder: EasyLoading.init(),
     );
   }
@@ -43,9 +47,9 @@ class MyApp extends StatelessWidget {
   Widget createTabBar() {
     List<Widget> pages = [const HomePageListPage(),const ShowPageListPage(),const MyPage()];
     List<BottomNavigationModel> items = [
-      BottomNavigationModel(selectIcon: "assets/icons/icon_tab_home_se@3x.png", unSelectIcon: "assets/icons/icon_tab_home_un@3x.png", title: "首页", isSelect: false, unreadNum: 0),
-      BottomNavigationModel(selectIcon: "assets/icons/icon_tab_jh_se@3x.png", unSelectIcon: "assets/icons/icon_tab_jh_un@3x.png", title: "秀", isSelect: false, unreadNum: 0),
-      BottomNavigationModel(selectIcon: "assets/icons/icon_tab_my_se@3x.png", unSelectIcon: "assets/icons/icon_tab_my_un@3x.png", title: "我的", isSelect: false, unreadNum: 0),
+      BottomNavigationModel(selectIcon: "assets/icons/icon_tab_home_sele@3x.png", unSelectIcon: "assets/icons/icon_tab_home_un@3x.png", title: "首页", isSelect: false, unreadNum: 0),
+      BottomNavigationModel(selectIcon: "assets/icons/icon_tab_jh_sele@3x.png", unSelectIcon: "assets/icons/icon_tab_jh_un@3x.png", title: "秀", isSelect: false, unreadNum: 0),
+      BottomNavigationModel(selectIcon: "assets/icons/icon_tab_my_sele@3x.png", unSelectIcon: "assets/icons/icon_tab_my_un@3x.png", title: "我的", isSelect: false, unreadNum: 0),
     ];
     return BaseTabBar(key: childTabViewKey, pages: pages, items: items);
   }
